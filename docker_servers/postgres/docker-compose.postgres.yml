@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15 # Or ankane/pgvector:latest if pgvector features are actively used from docker-compose.base.yml
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB_VECTOR}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # References volume defined in root docker-compose.yml
+    ports:
+      - "5432:5432" # Exposes Postgres locally. For Traefik exposure, specific labels would be needed.
+    networks:
+      - server-net # Connect to the main application network
+
+# Volumes and Networks are defined in the root docker-compose.yml
+# volumes:
+#   postgres_data: # This is now defined in the root docker-compose.yml
+
+# networks:
+#   server-net: # This is now defined in the root docker-compose.yml
+#     external: false # Or true if defined elsewhere and you are connecting to it

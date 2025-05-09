@@ -1,0 +1,23 @@
+services:
+  status-astro:
+    build:
+      context: ./status-astro
+    container_name: status-astro
+    restart: unless-stopped
+    environment:
+      - PUBLIC_DOMAIN=${DOMAIN:-localhost}
+    networks:
+      - server-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.status.rule=Host(`status.${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.status.entrypoints=websecure"
+      - "traefik.http.routers.status.tls=true"
+      - "traefik.http.routers.status.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.status.middlewares=basicauth@file"
+      - "traefik.http.services.status.loadbalancer.server.port=4321"
+    expose:
+      - 4321
+    command: [ "npm", "run", "start" ]
+
+# Networks are defined in the root docker-compose.yml

@@ -23,7 +23,7 @@ Below is a systematic list of errors and warnings from the latest Docker Compose
 
 ### 3. Path and Context Errors
 - [ ] Fix Rabbit Holes path error: `/home/jesse/futurestack/path/to/your/rabbitholes/source` not found. **Action**: Update `docker-compose.rabbitholes.yml` to point to the correct source directory or ensure Docker image is built from the repository's Dockerfile.
-- [x ] Set `TAVILY_API_KEY` and `GOOGLE_AI_API_KEY` environment variables for Rabbit Holes as per repository instructions.
+- [x] Set `TAVILY_API_KEY` and `GOOGLE_AI_API_KEY` environment variables for Rabbit Holes as per repository instructions.
 - [ ] Fix Status Page path error: `/home/jesse/futurestack/docker_servers/status-astro` not found.
 - [ ] Resolve Prometheus mount error related to WSL/Docker Desktop bind mounts.
 
@@ -32,6 +32,16 @@ Below is a systematic list of errors and warnings from the latest Docker Compose
 - [ ] Ensure Rabbit Holes starts after fixing path issues and variables.
 - [ ] Ensure Status Page starts after fixing path issues.
 - [ ] Ensure Prometheus starts after resolving mount issues.
+
+### 5. Directory Structure Consistency
+- [x] Create dedicated directories for each major service (e.g., Open-WebUI, Rabbit Holes, OpenHands, Grafana, Portainer, Status Page) within `docker_servers` to store configuration files and data, mirroring the structure used for Traefik and Prometheus. This enhances modularity and ease of management.
+- [ ] Use these directories as logical subdirectories to clone repositories only when necessary for local development or customization. Always check if cloning is required, as often only configuration values are needed.
+- [ ] Securely manage `.env` values and other configuration settings using Docker secrets or environment files, ensuring sensitive data is not exposed in version control.
+
+### 6. Testing Environment Setup
+- [ ] Containerize E2E and Puppeteer testing environments using Docker to ensure isolation, reproducibility, and scalability. This safeguards against breaking functionality when adding new services.
+- [ ] Create a dedicated `docker_servers/testing` directory with a `docker-compose.testing.yml` file to define testing services (e.g., Playwright, Puppeteer).
+- [ ] Integrate testing into CI/CD pipelines to automate verification of service functionality after updates or new service additions.
 
 ## Priority Task Groupings
 
@@ -47,12 +57,32 @@ Below is a systematic list of errors and warnings from the latest Docker Compose
 - [ ] Use Let's Encrypt for HTTPS with DNS or HTTP challenge, store certs in a mounted file (e.g., `acme.json`)
 - [ ] Use the `domains` array in Traefik labels for multi-domain/wildcard certs
 - [ ] Set `read_only: true` and `no-new-privileges: true` for the Traefik container
+- [ ] Implement Docker Compose `include:` feature to modularize configuration files, allowing for team-based development and easier management. Example:
+  ```yaml
+  include:
+    - docker_servers/docker-compose.traefik.yml
+    - docker_servers/docker-compose.prometheus.yml
+  ```
+- [ ] Use Docker Compose `profiles` to control service startup for different environments (dev, test, prod).
+- [ ] Utilize Docker Compose `secrets` for both runtime and build-time to securely manage sensitive data. Example:
+  ```yaml
+  secrets:
+    my_secret:
+      file: ./my_secret.txt
+  ```
+- [ ] Leverage `develop.watch` feature in Docker Compose for live code reloads during development of custom services or status pages.
 
 ### 2. Service Deployment & Organization
 - [ ] Archive Coolify as a 'nice-to-have' service to focus on Traefik and core services
 - [ ] Move all active Docker Compose files to a professional 'docker_servers' folder
 - [ ] Use Python or TypeScript for startup scripts to ensure cross-OS compatibility (instead of PS1 scripts)
 - [ ] Reconnect GitHub MCP access for documenting and updating issues once most services are confirmed running
+- [ ] Update `.gitignore` to exclude cloned repository code files from version control to avoid duplicate maintenance and context clutter on personal servers. Example:
+  ```
+  # Exclude cloned repositories for services
+  docker_servers/*/src/
+  docker_servers/*/repo/
+  ```
 
 ### 3. Testing & Monitoring
 - [ ] Deploy/serve status page

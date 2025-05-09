@@ -1,0 +1,42 @@
+services:
+  coolify:
+    image: coollabsio/coolify:latest
+    container_name: coolify
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - coolify_data:/data/coolify # References volume defined in root docker-compose.yml
+    environment:
+      - COOLIFY_APP_ID=${COOLIFY_APP_ID:-auto}
+      - COOLIFY_SECRET_KEY=${COOLIFY_SECRET_KEY}
+      - COOLIFY_DATABASE_URL=file:/data/coolify/db.sqlite
+      - COOLIFY_HOST=${COOLIFY_HOST:-coolify.localhost} # Ensure this matches your domain setup
+      - COOLIFY_AUTO_UPDATE=${COOLIFY_AUTO_UPDATE:-false}
+      - COOLIFY_WHITE_LABELED=${COOLIFY_WHITE_LABELED:-false}
+      - COOLIFY_HOSTED=${COOLIFY_HOSTED:-false}
+    networks:
+      - server-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.coolify.rule=Host(`coolify.${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.coolify.service=coolify-app"
+      - "traefik.http.routers.coolify.entrypoints=websecure"
+      - "traefik.http.routers.coolify.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.coolify.middlewares=compress@file" # Assumes compress middleware in dynamic config
+      - "traefik.http.services.coolify-app.loadbalancer.server.port=3000"
+
+      # Coolify WebSockets
+      - "traefik.http.routers.coolify-ws.rule=Host(`coolify.${DOMAIN:-localhost}`) && PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.coolify-ws.service=coolify-ws-app"
+      - "traefik.http.routers.coolify-ws.entrypoints=websecure"
+      - "traefik.http.routers.coolify-ws.tls.certresolver=letsencrypt"
+      - "traefik.http.services.coolify-ws-app.loadbalancer.server.port=6001"
+
+      # Coolify Terminal
+      - "traefik.http.routers.coolify-term.rule=Host(`coolify.${DOMAIN:-localhost}`) && PathPrefix(`/terminal`)"
+      - "traefik.http.routers.coolify-term.service=coolify-term-app"
+      - "traefik.http.routers.coolify-term.entrypoints=websecure"
+      - "traefik.http.routers.coolify-term.tls.certresolver=letsencrypt"
+      - "traefik.http.services.coolify-term-app.loadbalancer.server.port=6002"
+
+# Networks and Volumes are defined in the root docker-compose.yml

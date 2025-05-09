@@ -1,0 +1,42 @@
+include:
+  # Base services
+  - docker_servers/traefik/docker-compose.traefik.yml
+  - docker_servers/base/docker-compose.base.yml
+  - docker_servers/portainer/docker-compose.portainer.yml
+  - docker_servers/postgres/docker-compose.postgres.yml
+  - docker_servers/minio/docker-compose.minio.yml
+
+  # Application/Tooling services
+  - docker_servers/coolify/docker-compose.coolify.yml
+  - docker_servers/flowise/docker-compose.yml
+  - docker_servers/prometheus/docker-compose.prometheus.yml
+  - docker_servers/grafana/docker-compose.grafana.yml
+  - docker_servers/openwebui/docker-compose.openwebui.yml
+  - docker_servers/openhands/docker-compose.openhands.yml
+  - docker_servers/status-astro/docker-compose.status-astro.yml
+  - docker_servers/rabbitholes/docker-compose.rabbitholes.yml
+  - docker_servers/testing/docker-compose.testing.yml
+
+networks:
+  server-net:
+    name: server-net
+    driver: bridge
+  traefik-net:
+    name: traefik-net
+    # external: true # Set to true if Traefik manages this network externally (e.g., `docker network create traefik-net`)
+    # Otherwise, if it's just for this stack, set to false or remove 'external: true'.
+    # For now, assuming it's managed within this stack for simplicity.
+    driver: bridge
+
+volumes:
+  postgres_data:
+  grafana_data:
+  minio_data:
+  coolify_data:
+  portainer_data:
+  openwebui_data:
+  ollama_data:
+  openhands_data:
+    # flowise_data: # Uncomment if flowise is changed to use a named volume
+    # prometheus_data: # Add if prometheus service uses a named volume
+    # testing_data: # Add if testing service uses a named volume

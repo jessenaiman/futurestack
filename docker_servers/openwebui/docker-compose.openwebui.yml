@@ -1,0 +1,54 @@
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    volumes:
+      - openwebui_data:/app/backend/data
+    depends_on:
+      - ollama
+    environment:
+      - DATA_DIR=/app/backend/data
+      # Connect to the ollama service on the internal network
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - WEBUI_NAME=${WEBUI_NAME:-Open WebUI}
+      # Use the configured domain
+      - WEBUI_URL=https://webui.${DOMAIN:-localhost}
+      # Set authentication mode (adjust as needed, e.g., False for single user local dev)
+      # - WEBUI_AUTH=True # Example, check docs for default
+      # - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY} # Needed for persistent sessions if auth is on
+    restart: always
+    networks:
+      - server-net
+    labels:
+      - "traefik.enable=true"
+      # Local domain configuration
+      - "traefik.http.routers.webui.rule=Host(`webui.${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.webui.entrypoints=websecure"
+      - "traefik.http.routers.webui.tls=true"
+      - "traefik.http.routers.webui.tls.certresolver=letsencrypt"
+      # Apply basic authentication and compression middleware
+      - "traefik.http.routers.webui.middlewares=basicauth@file,compress@file"
+      # Service definition pointing to the internal container port (8080 based on OpenWebUI docs/examples)
+      - "traefik.http.services.webui.loadbalancer.server.port=8080"
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    volumes:
+      - ollama_data:/root/.ollama # References volume defined in root docker-compose.yml
+    restart: always
+    networks:
+      - server-net
+    labels:
+      # Ollama is not exposed directly via Traefik
+      - "traefik.enable=false"
+    # Add GPU support if available and desired
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+# Networks and Volumes are defined in the root docker-compose.yml

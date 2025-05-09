@@ -1,0 +1,32 @@
+services:
+  minio:
+    image: minio/minio
+    container_name: minio
+    restart: always
+    command: server /data --console-address ":9001" # Ensure console is accessible
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      # MINIO_SERVER_URL: "http://minio.${DOMAIN:-localhost}" # If needed for presigned URLs etc.
+      # MINIO_BROWSER_REDIRECT_URL: "https://minio-console.${DOMAIN:-localhost}" # If exposing console on different subdomain
+    volumes:
+      - minio_data:/data # References volume defined in root docker-compose.yml
+    networks:
+      - server-net
+    labels:
+      - "traefik.enable=true"
+      # MinIO API/S3 Endpoint
+      - "traefik.http.routers.minio-s3.rule=Host(`minio.${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.minio-s3.service=minio-s3-svc"
+      - "traefik.http.services.minio-s3-svc.loadbalancer.server.port=9000" # Default S3 port
+      - "traefik.http.routers.minio-s3.entrypoints=websecure"
+      - "traefik.http.routers.minio-s3.tls.certresolver=letsencrypt"
+      # MinIO Console
+      - "traefik.http.routers.minio-console.rule=Host(`minio-console.${DOMAIN:-localhost}`)" # Separate subdomain for console
+      - "traefik.http.routers.minio-console.service=minio-console-svc"
+      - "traefik.http.services.minio-console-svc.loadbalancer.server.port=9001" # Console port
+      - "traefik.http.routers.minio-console.entrypoints=websecure"
+      - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.minio-console.middlewares=basicauth@file" # Secure the console
+
+# Networks and Volumes are defined in the root docker-compose.yml

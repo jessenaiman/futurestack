@@ -10,6 +10,7 @@
 
 .roo
 .venv
+.roomodes
 
 # Node.js dependencies
 node_modules/
@@ -18,6 +19,7 @@ package-lock.json
 # Logs
 logs/
 *.log
+!stack_deploy.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -33,12 +35,22 @@ pids/
 */data/
 volumes/
 
+# Service specific data and secrets
+docker_servers/**/data/
+docker_servers/**/certs/
+docker_servers/**/*.key
+docker_servers/**/*.pub
+traefik/acme/
+traefik/certs/
+
+# SSL certificates and keys
+*.pem
+*.key
+*.crt
+*.pub
+
 # Coolify specific
 /data/coolify/
-
-# SSL certificates for local development
-nginx/ssl/*.key
-nginx/ssl/*.crt
 
 # Temporary files
 .tmp/
@@ -62,6 +74,10 @@ Thumbs.db
 !.vscode/mcp.json
 *.swp
 *.swo
+
+# Obsidian
+.obsidian/
+obsidian-vault/**/.obsidian/
 
 # Build outputs
 dist/

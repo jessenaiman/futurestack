@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+  flowise:
+    image: flowiseai/flowise:latest
+    restart: always
+    environment:
+      - PORT=3000
+      - FLOWISE_USERNAME=admin
+      - FLOWISE_PASSWORD=password123
+      - DATABASE_PATH=/root/.flowise
+      - APIKEY_PATH=/root/.flowise
+      - SECRETKEY_PATH=/root/.flowise
+      - LOG_LEVEL=info
+      - CORS_ORIGINS=*
+    volumes:
+      - ./data:/root/.flowise # This will create a 'data' folder inside 'docker_servers/flowise/'
+      # Or, if you prefer a named volume managed by Docker:
+      # - flowise_data:/root/.flowise # Ensure 'flowise_data:' is in root docker-compose.yml volumes
+    networks:
+      - server-net # Connect to the main application network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.flowise.rule=Host(`flowise.${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.flowise.entrypoints=websecure"
+      - "traefik.http.routers.flowise.tls.certresolver=letsencrypt"
+      - "traefik.http.services.flowise.loadbalancer.server.port=3000" # Matches PORT env variable
+      # Add auth middleware if needed, e.g.,
+      # - "traefik.http.routers.flowise.middlewares=basicauth@file"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+# Networks are defined in the root docker-compose.yml

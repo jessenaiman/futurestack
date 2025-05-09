@@ -1,0 +1,42 @@
+services:
+  openhands:
+    image: docker.all-hands.dev/all-hands-ai/openhands:0.37 # Using latest from initial websearch
+    container_name: openhands
+    restart: always
+    volumes:
+      - openhands_data:/root/.openhands-state # Persistent state/config
+      # Mount your workspace outside the project here (read-only is safer)
+      # - /path/to/your/workspace:/opt/workspace_base:ro # <--- UPDATE THIS PATH
+      - /var/run/docker.sock:/var/run/docker.sock # Needed for OpenHands to manage its own sandbox containers
+    environment:
+      - LOG_ALL_EVENTS=true # Example from OpenHands docs
+      - SANDBOX_RUNTIME_CONTAINER_IMAGE=docker.all-hands.dev/all-hands-ai/runtime:0.37-nikolaik # Example runtime image
+      # Configure LLM access
+      - LLM_API_KEY=${OPENAI_API_KEY} # Or ANTHROPIC_API_KEY etc.
+      - LLM_MODEL=${LLM_MODEL} # Example: gpt-4o, claude-3-7-sonnet etc.
+      # If using Ollama (local LLM), uncomment and configure:
+      # - RUNTIME=daytona # Example runtime that might support Ollama
+      # - DAYTONA_API_KEY=${DAYTONA_API_KEY} # If needed for Daytona
+      # - LLM_OLLAMA_BASE_URL=http://ollama:11434 # Connect to Ollama service
+      # Need to check OpenHands docs for S3 config if required
+      # - S3_ENDPOINT=http://minio:9000 # Example S3 config if supported
+      # - S3_ACCESS_KEY=${MINIO_ROOT_USER}
+      # - S3_SECRET_KEY=${MINIO_ROOT_PASSWORD}
+    networks:
+      - server-net
+    labels:
+      - "traefik.enable=true"
+      # Routing rule based on the domain
+      - "traefik.http.routers.openhands.rule=Host(`openhands.${DOMAIN:-localhost}`)"
+      - "traefik.http.routers.openhands.entrypoints=websecure"
+      - "traefik.http.routers.openhands.tls=true"
+      - "traefik.http.routers.openhands.tls.certresolver=letsencrypt"
+      # Apply basic authentication middleware
+      - "traefik.http.routers.openhands.middlewares=basicauth@file"
+      # Service definition pointing to the internal container port (3000 based on OpenHands docs/examples)
+      - "traefik.http.services.openhands.loadbalancer.server.port=3000"
+      # Add compression middleware if desired
+      # - "traefik.http.routers.openhands.middlewares=compress@docker"
+      # - "traefik.http.middlewares.compress.compress=true"
+
+# Networks and Volumes are defined in the root docker-compose.yml
