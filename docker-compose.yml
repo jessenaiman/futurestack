@@ -1,10 +1,10 @@
 include:
   # Base services
-  - docker_servers/traefik/docker-compose.traefik.yml
-  - docker_servers/base/docker-compose.base.yml
+  - docker_servers/traefik/docker-compose.traefik.yml  # Main traefik configuration
+  - docker_servers/base/docker-compose.base.yml        # Only postgres now
   - docker_servers/portainer/docker-compose.portainer.yml
-  - docker_servers/postgres/docker-compose.postgres.yml
-  - docker_servers/minio/docker-compose.minio.yml
+  - docker_servers/postgres/docker-compose.postgres.yml  # Database service
+  - docker_servers/minio/docker-compose.minio.yml       # Object storage
 
   # Application/Tooling services
   - docker_servers/coolify/docker-compose.coolify.yml

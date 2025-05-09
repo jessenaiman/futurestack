@@ -17,22 +17,6 @@
 # or in the specific service files that use them if they are not shared.
 
 services:
-  minio:
-    image: minio/minio
-    container_name: minio
-    restart: always
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-        reservations:
-          memory: 256M
-    volumes:
-      - minio_data:/data
-    networks:
-      - server-net
-    # Add Traefik labels here if you want to expose MinIO console via Traefik
-
   postgres:
     image: ankane/pgvector:latest
     container_name: postgres
