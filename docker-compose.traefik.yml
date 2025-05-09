@@ -9,9 +9,9 @@ services:
       - "127.0.0.1:${TRAEFIK_DASHBOARD_PORT:-8080}:8080" # Dashboard port
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/config:/etc/traefik/config:ro # Dynamic configuration
-      - ./traefik/certs:/etc/certs # SSL certificates (if manually managed)
-      - ./traefik/acme:/etc/traefik/acme # Let's Encrypt certificates
+      - ./docker_servers/traefik/config:/etc/traefik/config:ro # Dynamic configuration
+      - ./docker_servers/traefik/certs:/etc/certs # SSL certificates (if manually managed)
+      - ./docker_servers/traefik/acme:/etc/traefik/acme # Let's Encrypt certificates
     networks:
       - server-net # Connect to the main application network
       - traefik-net # External network if needed for specific routing, otherwise server-net is primary

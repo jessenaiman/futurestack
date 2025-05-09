@@ -9,9 +9,9 @@ services:
       - "127.0.0.1:${TRAEFIK_DASHBOARD_PORT:-8080}:8080" # Dashboard port
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/config:/etc/traefik/config:ro # Dynamic configuration relative to project root
-      - ./traefik/certs:/etc/certs # SSL certificates (if manually managed) relative to project root
-      - ./traefik/acme:/etc/traefik/acme # Let's Encrypt certificates relative to project root
+      - ./docker_servers/traefik/config:/etc/traefik/config:ro # Dynamic configuration relative to project root
+      - ./docker_servers/traefik/certs:/etc/certs # SSL certificates (if manually managed) relative to project root
+      - ./docker_servers/traefik/acme:/etc/traefik/acme # Let's Encrypt certificates relative to project root
     # Networks will be connected via the root docker-compose.yml or by services explicitly joining them.
     # This service itself will be attached to server-net and traefik-net by the root docker-compose.yml.
     command:
