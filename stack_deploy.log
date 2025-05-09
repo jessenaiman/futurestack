@@ -1,0 +1,12 @@
+Pruning Docker system...
+Deleted Containers:
+a6722d67f6dddc0b292071a9c5c5e39824b90cac8a228aaa774a921e921ece92
+
+Total reclaimed space: 4.096kB
+
+========================================
+Starting Core Services (Traefik, PostgreSQL, MinIO) with docker_servers/docker-compose.base.yml...
+Done: Core Services (Traefik, PostgreSQL, MinIO)
+
+========================================
+Starting Prometheus with docker_servers/docker-compose.prometheus.yml...

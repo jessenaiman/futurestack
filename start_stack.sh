@@ -34,6 +34,7 @@ declare -a compose_files=(
   "docker_servers/docker-compose.openhands.yml"
   "docker_servers/docker-compose.status-astro.yml"
   "docker_servers/docker-compose.rabbitholes.yml"
+  "docker_servers/testing/docker-compose.testing.yml"
 )
 
 declare -a group_names=(
@@ -45,6 +46,7 @@ declare -a group_names=(
   "OpenHands"
   "Status Page"
   "Rabbit Holes"
+  "Testing Services (Puppeteer, Playwright)"
 )
 
 for i in "${!compose_files[@]}"; do
