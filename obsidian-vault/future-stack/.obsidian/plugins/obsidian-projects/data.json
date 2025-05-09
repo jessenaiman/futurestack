@@ -1,0 +1,80 @@
+{
+  "version": 2,
+  "projects": [
+    {
+      "fieldConfig": {},
+      "defaultName": "",
+      "templates": [
+        "Omega Spiral Task Template.md"
+      ],
+      "excludedNotes": [],
+      "isDefault": false,
+      "dataSource": {
+        "kind": "folder",
+        "config": {
+          "path": "01 - Projects/Project Omega Spiral",
+          "recursive": true
+        }
+      },
+      "newNotesFolder": "",
+      "views": [
+        {
+          "config": {
+            "fieldConfig": {
+              "assignee": {
+                "width": 145
+              }
+            }
+          },
+          "filter": {
+            "conjunction": "and",
+            "conditions": []
+          },
+          "colors": {
+            "conditions": []
+          },
+          "sort": {
+            "criteria": []
+          },
+          "id": "58c6694c-a32b-40d2-ab3c-b793dc4c2a8d",
+          "name": "Table",
+          "type": "table"
+        },
+        {
+          "config": {
+            "includeFields": [
+              "status"
+            ]
+          },
+          "filter": {
+            "conjunction": "and",
+            "conditions": []
+          },
+          "colors": {
+            "conditions": []
+          },
+          "sort": {
+            "criteria": []
+          },
+          "id": "db883d3d-fbb9-4d2f-a4a1-9ae5c0513892",
+          "name": "Board",
+          "type": "board"
+        }
+      ],
+      "id": "8ad5fb55-30a4-4a06-80c8-532fb5ac2950",
+      "name": "Omega Spiral"
+    }
+  ],
+  "archives": [],
+  "preferences": {
+    "projectSizeLimit": 1000,
+    "frontmatter": {
+      "quoteStrings": "PLAIN"
+    },
+    "locale": {
+      "firstDayOfWeek": "default"
+    },
+    "commands": [],
+    "linkBehavior": "open-editor"
+  }
+}

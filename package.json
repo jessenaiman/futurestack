@@ -1,0 +1,45 @@
+{
+  "name": "future-stack",
+  "version": "1.0.0",
+  "description": "A comprehensive personal cloud setup on Ubuntu 24.10",
+  "main": "index.js",
+  "scripts": {
+    "setup": "node src/utils/setup.js",
+    "test": "playwright test",
+    "test:local": "playwright test local.spec.ts",
+    "test:remote": "playwright test remote.spec.ts",
+    "test:ui": "playwright test --ui",
+    "migrate-embeddings": "node scripts/migrate-embeddings.js",
+    "search-docs": "node scripts/search-documents.js",
+    "add-document": "node scripts/add-document.js",
+    "add-memory": "node scripts/add-memory.js"
+  },
+  "keywords": [
+    "docker",
+    "coolify",
+    "personal-cloud",
+    "vector-db",
+    "pgvector"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
+    "@types/pg": "^8.11.14",
+    "composio-core": "^0.5.35",
+    "dotenv": "^16.5.0",
+    "drizzle-kit": "^0.31.0",
+    "drizzle-orm": "^0.43.1",
+    "openai": "^4.96.2",
+    "pg": "^8.15.6",
+    "playwright": "^1.52.0",
+    "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.3",
+    "@types/ws": "^8.18.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
