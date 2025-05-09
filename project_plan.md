@@ -11,12 +11,12 @@ This project plan outlines the steps and best practices for setting up a unified
 Below is a systematic list of errors and warnings from the latest Docker Compose deployment attempts. These must be resolved sequentially before proceeding with other tasks.
 
 ### 1. Missing Environment Variables
-- [ ] Set `TRAEFIK_ACME_EMAIL` for Let's Encrypt notifications.
+- [x] Set `TRAEFIK_ACME_EMAIL` for Let's Encrypt notifications.
 - [x] Set `OLLAMA_BASE_URL` for Open-WebUI connectivity.
 - [x] Set `TAVILY_API_KEY`, `GOOGLE_AI_API_KEY`, and `GOOGLE_AI_MODEL` for Rabbit Holes.
-- [ ] Set `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB_VECTOR` for PostgreSQL.
-- [ ] Set `OPENAI_API_KEY` and `LLM_MODEL` for AI services.
-- [ ] Set `GF_SECURITY_ADMIN_USER` and `GF_SECURITY_ADMIN_PASSWORD` for Grafana.
+- [x] Set `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB_VECTOR` for PostgreSQL.
+- [x] Set `OPENAI_API_KEY` and `LLM_MODEL` for AI services.
+- [x] Set `GF_SECURITY_ADMIN_USER` and `GF_SECURITY_ADMIN_PASSWORD` for Grafana.
 
 ### 2. Container Conflicts
 - [ ] Ensure no container name conflicts by running `docker system prune -f` before each start attempt (partially resolved).

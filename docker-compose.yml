@@ -1,8 +1,22 @@
 include:
   # Core Infrastructure
-  - docker_servers/traefik/docker-compose.traefik.yml  # Main traefik configuration
-  - docker_servers/postgres/docker-compose.postgres.yml # Database service
-  - docker_servers/minio/docker-compose.minio.yml      # Object storage
+  - docker_servers/traefik/docker-compose.traefik.yml
+  - docker_servers/postgres/docker-compose.postgres.yml
+  - docker_servers/minio/docker-compose.minio.yml
+  # Monitoring & Management
+  - docker_servers/grafana/docker-compose.grafana.yml
+  - docker_servers/portainer/docker-compose.portainer.yml
+  - docker_servers/prometheus/docker-compose.prometheus.yml
+  # Application Services
+  - docker_servers/openwebui/docker-compose.openwebui.yml
+  - docker_servers/openhands/docker-compose.openhands.yml
+  - docker_servers/status-astro/docker-compose.status-astro.yml
+  # AI & Vector DB
+  - docker_servers/neo4j/docker-compose.neo4j.yml
+  # Optional/Experimental
+  - docker_servers/coolify/docker-compose.coolify.yml
+  - docker_servers/flowise/docker-compose.yml
+  - docker_servers/rabbitholes/docker-compose.rabbitholes.yml
 
 networks:
   server-net:
@@ -10,9 +24,6 @@ networks:
     driver: bridge
   traefik-net:
     name: traefik-net
-    # external: true # Set to true if Traefik manages this network externally (e.g., `docker network create traefik-net`)
-    # Otherwise, if it's just for this stack, set to false or remove 'external: true'.
-    # For now, assuming it's managed within this stack for simplicity.
     driver: bridge
 
 volumes:
@@ -24,6 +35,6 @@ volumes:
   openwebui_data:
   ollama_data:
   openhands_data:
-    # flowise_data: # Uncomment if flowise is changed to use a named volume
-    # prometheus_data: # Add if prometheus service uses a named volume
-    # testing_data: # Add if testing service uses a named volume
+  # flowise_data: # Uncomment if flowise is changed to use a named volume
+  # prometheus_data: # Add if prometheus service uses a named volume
+  # testing_data: # Add if testing service uses a named volume

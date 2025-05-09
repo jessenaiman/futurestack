@@ -4,42 +4,34 @@
 services:
   rabbitholes:
     build:
-      context: ../path/to/your/rabbitholes/source # <--- UPDATE THIS PATH
-      dockerfile: Dockerfile
-    container_name: rabbitholes
-    # No need to expose host port if using Traefik
-    # ports:
-    #   - "3001:3001"
+      context: ${RABBITHOLES_BUILD_CONTEXT}
+      dockerfile: ${RABBITHOLES_DOCKERFILE:-Dockerfile}
+    container_name: ${RABBITHOLES_CONTAINER_NAME:-rabbitholes}
     environment:
-      - PORT=3001 # Internal port for the container
-      - NODE_ENV=production
+      - PORT=${RABBITHOLES_PORT:-3001}
+      - NODE_ENV=${NODE_ENV:-production}
       - TAVILY_API_KEY=${TAVILY_API_KEY}
       - GOOGLE_AI_API_KEY=${GOOGLE_AI_API_KEY}
       - GOOGLE_AI_MODEL=${GOOGLE_AI_MODEL}
-      # Connect to the postgres service on the internal network
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB_VECTOR}?sslmode=disable
+      - DATABASE_URL=${RABBITHOLES_DATABASE_URL}
     networks:
       - server-net
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:3001/api/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:${RABBITHOLES_PORT:-3001}/api/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
     labels:
       - "traefik.enable=true"
-      # Routing rule based on the domain
       - "traefik.http.routers.rabbitholes.rule=Host(`rabbitholes.${DOMAIN:-localhost}`)"
       - "traefik.http.routers.rabbitholes.entrypoints=websecure"
       - "traefik.http.routers.rabbitholes.tls=true"
       - "traefik.http.routers.rabbitholes.tls.certresolver=letsencrypt"
-      # Apply basic authentication middleware
       - "traefik.http.routers.rabbitholes.middlewares=basicauth@file"
-      # Service definition pointing to the internal container port (3001 based on Rabbit-Holes config)
-      - "traefik.http.services.rabbitholes.loadbalancer.server.port=3001"
+      - "traefik.http.services.rabbitholes.loadbalancer.server.port=${RABBITHOLES_PORT:-3001}"
     restart: unless-stopped
 
 networks:
-  # Reference the external network defined in docker-compose.base.yml
-  # server-net: # Removed to avoid network conflict; defined in root docker-compose.yml
+  server-net:
     external: true
